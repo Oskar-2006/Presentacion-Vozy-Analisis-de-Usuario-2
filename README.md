@@ -4,7 +4,7 @@ Presentación web de 24 diapositivas con el trabajo de las semanas 1 a 11 de An�
 
 ## Cómo abrirla
 
-En línea, con GitHub Pages (ver el enlace en la descripción del repositorio), o con doble clic en `presentacion web/index.html`. Funciona sin internet. Se navega con las flechas, con clic en los costados o deslizando. `F` activa la pantalla completa y `G` abre el índice por semanas.
+En línea: https://oskar-2006.github.io/Presentacion-Vozy-Analisis-de-Usuario-2/ (GitHub Pages), o con doble clic en `presentacion web/index.html`. Funciona sin internet. Se navega con las flechas, con clic en los costados o deslizando. `F` activa la pantalla completa y `G` abre el índice por semanas.
 
 ## Qué hay en cada carpeta
 
