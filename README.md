@@ -4,7 +4,7 @@ Presentación web de 24 diapositivas con el trabajo de las semanas 1 a 11 de An�
 
 ## Cómo abrirla
 
-Doble clic en `presentacion web/index.html`. Funciona sin internet. Se navega con las flechas, con clic en los costados o deslizando. `F` activa la pantalla completa y `G` abre el índice por semanas.
+En línea, con GitHub Pages (ver el enlace en la descripción del repositorio), o con doble clic en `presentacion web/index.html`. Funciona sin internet. Se navega con las flechas, con clic en los costados o deslizando. `F` activa la pantalla completa y `G` abre el índice por semanas.
 
 ## Qué hay en cada carpeta
 
@@ -15,4 +15,4 @@ Doble clic en `presentacion web/index.html`. Funciona sin internet. Se navega co
 
 - Las imágenes ya están anonimizadas: los participantes aparecen solo por código (E1…E7, sesiones A a E).
 - Estilo visual: morado y lima de Vozy, con la onda de voz del logo como motivo.
-- Repositorio privado por contener material de clase.
+- Repositorio público para poder compartir la presentación con GitHub Pages: no contiene nombres, teléfonos ni capturas originales.
