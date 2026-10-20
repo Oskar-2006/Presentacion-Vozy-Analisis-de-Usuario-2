@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vozy en el chat de Claro · Análisis de Usuario II</title>
+<link rel="icon" href="data:,">
+<meta name="theme-color" content="#1C0A3F">
+<style>
+:root{
+  --violeta:#8C20FF; --violeta-prof:#4A12B8; --noche:#1C0A3F; --lima:#CBFC00;
+  --lavanda:#F5F2FC; --texto:#1F1535; --secundario:#5B5675; --alerta:#C2410C;
+  --verde:#2F7D4F; --ambar:#B7791F;
+  --fs-title:72px; --fs-body:32px; --fs-card:32px; --fs-big:120px; --fs-fig:120px;
+  --k:2.8px; --ph:280px;
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html,body{margin:0;height:100%;background:var(--noche);overflow:hidden}
+body{font-family:'Segoe UI Variable Display','Segoe UI',system-ui,-apple-system,Roboto,sans-serif;color:var(--texto);-webkit-font-smoothing:antialiased}
+button{font:inherit}
+
+/* Lienzo 1920x1080 escalado (letterbox) */
+.stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;overflow:hidden;background:var(--lavanda);transform:translate(-50%,-50%)}
+
+.slide{position:absolute;inset:0;padding:96px 120px 170px;display:flex;flex-direction:column;overflow:hidden;background:var(--lavanda);
+  opacity:0;visibility:hidden;transform:translateX(24px);
+  transition:opacity .25s ease-out,transform .25s ease-out,visibility 0s linear .25s}
+.slide.active{opacity:1;visibility:visible;transform:none;transition:opacity .25s ease-out,transform .25s ease-out,visibility 0s}
+.slide.dark{background:linear-gradient(160deg,var(--noche) 45%,#2A0D74 100%);color:#fff}
+
+.week-row{display:flex;align-items:center;gap:20px;margin-bottom:18px}
+.week{font-size:22px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:var(--violeta)}
+.slide.dark .week{color:var(--lima)}
+.wsep{display:inline-block;width:90px;height:22px;color:var(--violeta)}
+.slide.dark .wsep{color:var(--lima)}
+.wsep svg,.wave-bg svg{width:100%;height:100%;fill:currentColor;display:block}
+h2{font-size:var(--fs-title);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin:0 0 28px}
+h2.long{font-size:60px}
+.slide.dark h2{color:#fff}
+.body{flex:1;min-height:0;display:flex;flex-direction:column;gap:20px;overflow:hidden}
+.body > .grid2,.body > .grid3,.body > .grid5{flex:1;min-height:0;align-content:stretch;grid-auto-rows:1fr}
+.body > .grid2 > .card,.body > .grid3 > .card,.body > .grid5 > .card{display:flex;flex-direction:column;justify-content:center}
+.lead{font-size:var(--fs-body);line-height:1.35;margin:0}
+.slide.dark .lead{color:#fff}
+.cap{font-size:var(--fs-card);line-height:1.3}
+.ttl{font-size:36px;font-weight:700;line-height:1.2;margin:0 0 10px}
+.fig{font-size:var(--fs-fig);font-weight:900;line-height:1;letter-spacing:-.04em;color:var(--violeta)}
+.slide.dark .fig{color:var(--lima)}
+.muted{color:var(--secundario)}
+.slide.dark .muted{color:rgba(255,255,255,.75)}
+
+.card{background:#fff;border:1px solid rgba(140,32,255,.18);border-radius:24px;box-shadow:0 12px 32px rgba(74,18,184,.10);padding:32px 36px;color:var(--texto);margin:0}
+.slide.dark .card{background:rgba(255,255,255,.07);border-color:rgba(203,252,0,.28);box-shadow:none;color:#fff}
+.slide.dark .card.img-card,.card.img-card{background:#fff;color:var(--texto)}
+.img-card{padding:20px;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.img-card img{display:block;width:100%;height:100%;min-height:0;object-fit:contain;cursor:zoom-in}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:24px}
+.stack{display:flex;flex-direction:column;gap:20px}
+.list{margin:0;padding:0;list-style:none}
+.list li{position:relative;padding-left:34px;margin:0 0 12px;font-size:var(--fs-card);line-height:1.3}
+.list li::before{content:"";position:absolute;left:0;top:.5em;width:12px;height:12px;border-radius:50%;background:var(--violeta)}
+.slide.dark .list li::before{background:var(--lima)}
+.quote{font-style:normal;font-size:var(--fs-card);color:var(--violeta-prof);font-weight:700;margin:10px 0 0}
+
+/* Cuadrantes FODA */
+.foda{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:28px;flex:1;min-height:0}
+.foda .card{padding:0;overflow:hidden;display:flex;flex-direction:column}
+.foda .hd{padding:18px 32px;color:#fff;font-size:36px;font-weight:800}
+.foda .bd{padding:22px 32px;flex:1}
+.foda .bd .list li{margin-bottom:10px}
+
+/* Barras horizontales (7) */
+.hbars{display:flex;flex-direction:column;gap:18px}
+.hbar{display:grid;grid-template-columns:600px 1fr 180px;align-items:center;gap:24px;font-size:var(--fs-card)}
+.track{height:54px;background:rgba(255,255,255,.12);border-radius:12px;overflow:hidden}
+.fill{height:100%;width:100%;background:var(--violeta);border-radius:12px;transform-origin:left;transform:scaleX(0);transition:transform 250ms ease-out}
+.slide.active .fill{transform:scaleX(var(--v))}
+.fill.top{background:var(--lima)}
+.hbar .val{text-align:right;font-weight:700}
+
+/* Barras verticales SUS (18) */
+.vplot{position:relative;height:var(--ph);border-bottom:2px solid rgba(255,255,255,.45);display:flex;justify-content:space-around;align-items:flex-end;margin-top:8px}
+.vcol{width:200px;height:100%;display:flex;align-items:flex-end;justify-content:center}
+.vfill{width:120px;height:calc(var(--v) * var(--k));background:var(--violeta);border-radius:14px 14px 0 0;transform-origin:bottom;transform:scaleY(0);transition:transform 250ms ease-out}
+.slide.active .vfill{transform:scaleY(1)}
+.vfill.top{background:var(--lima)}
+.refline{position:absolute;left:0;right:0;bottom:calc(68 * var(--k));border-top:3px dashed var(--lima);pointer-events:none}
+.refline span{position:absolute;left:0;bottom:8px;font-size:22px;font-weight:700;color:var(--lima);background:transparent;white-space:nowrap}
+.vlabels{display:flex;justify-content:space-around;margin-top:10px}
+.vlab{width:200px;text-align:center;font-size:26px;line-height:1.25}
+.vlab b{font-size:30px}
+
+/* Embudo (10) */
+.stg{display:flex;flex-direction:column;gap:18px;padding:24px 24px 20px}
+.stg .fig{font-size:110px}
+.stg .fdesc{font-size:32px;line-height:1.3}
+.s22 .list li,.s22 .cap{font-size:34px}
+.s22 .ttl{font-size:44px}
+.s17 .stack .cap{font-size:28px}
+.s17 .stack .card{padding:22px 30px}
+.stg .lbl{font-size:22px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:var(--violeta)}
+.slide.dark .stg .lbl{color:var(--lima)}
+.desc-bar{height:14px;border-radius:7px;background:var(--violeta);transform-origin:left;transform:scaleX(0);transition:transform 250ms ease-out}
+.slide.active .desc-bar{transform:scaleX(1)}
+
+/* Semáforo (21) */
+.sem{background:var(--c);color:#fff;border-radius:24px;padding:28px 32px;display:flex;flex-direction:column;justify-content:space-between;gap:10px;min-height:250px}
+.sem .cap{font-size:32px;font-weight:700}
+.sem .fig{color:#fff;font-size:150px}
+.sem.a{color:var(--noche)}
+
+/* Bot (16) */
+.split16{display:grid;grid-template-columns:560px 1fr;gap:28px;flex:1;min-height:0;overflow:hidden}
+.split16 .menu{display:flex;align-items:center;justify-content:center;padding:16px;min-height:0;overflow:hidden;height:100%}
+.split16 .menu img{width:100%;height:100%;object-fit:contain;cursor:zoom-in}
+.split16 .right{display:flex;flex-direction:column;gap:16px;min-height:0;overflow:hidden}
+.nums{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.nums .card{padding:14px 22px}
+.nums .fig{font-size:64px}
+.nums .cap{font-size:28px;margin-top:4px !important}
+.derv{padding:12px;display:flex;align-items:center;justify-content:center;flex:1;min-height:0;overflow:hidden}
+.derv img{width:100%;height:100%;object-fit:contain;cursor:zoom-in}
+
+/* Portada y cierre */
+.dark-cover .body{position:relative;z-index:1}
+.wave-bg{position:absolute;right:-120px;top:50%;transform:translateY(-50%);width:980px;height:560px;color:rgba(203,252,0,.12);pointer-events:none}
+.cover{position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:space-between;gap:60px}
+.cover h1{font-size:128px;font-weight:800;letter-spacing:-.035em;line-height:1;margin:0 0 32px;color:#fff}
+.cover .sub{font-size:40px;line-height:1.3;color:#fff;margin:0 0 40px;max-width:1100px}
+.cover .pie{font-size:28px;color:var(--lima);margin:0}
+.logo-card{background:#fff;border-radius:24px;padding:48px 56px;width:520px;flex:none;display:flex;justify-content:center}
+.logo-card img{width:100%;height:auto;cursor:zoom-in}
+
+/* Footer global y progreso */
+.foot{position:absolute;left:120px;right:120px;bottom:60px;display:flex;justify-content:space-between;align-items:center;font-size:20px;color:var(--secundario);z-index:5}
+.stage.dk .foot,.slide.dark ~ .foot{color:rgba(255,255,255,.8)}
+.foot .left{display:flex;align-items:center;gap:24px}
+.foot .btn{background:transparent;border:1px solid currentColor;border-radius:999px;padding:8px 18px;color:inherit;cursor:pointer;min-height:44px;font-size:20px}
+.foot .count{font-weight:700;font-variant-numeric:tabular-nums}
+.bars{position:absolute;left:120px;right:120px;bottom:20px;height:24px;display:flex;align-items:flex-end;gap:4px;z-index:5}
+.bars i{flex:1;background:rgba(140,32,255,.22);border-radius:3px;transition:background .25s ease-out;min-width:0}
+.bars i.on{background:var(--violeta)}
+body.dark .bars i{background:rgba(203,252,0,.22)}
+body.dark .bars i.on{background:var(--lima)}
+body.dark .foot{color:rgba(255,255,255,.8)}
+
+/* Lightbox e índice (fuera del lienzo) */
+.lb{position:fixed;inset:0;background:rgba(28,10,63,.94);z-index:100;display:flex;align-items:center;justify-content:center;padding:24px}
+.lb img{max-width:calc(100vw - 200px);max-height:calc(100vh - 80px);width:auto;height:auto;background:#fff;border-radius:16px;padding:16px}
+.lbtn{position:absolute;min-width:44px;min-height:44px;border-radius:999px;border:1px solid rgba(203,252,0,.6);background:rgba(28,10,63,.6);color:#fff;font-size:34px;line-height:1;cursor:pointer}
+#lb-prev{left:24px;top:50%;transform:translateY(-50%)}
+#lb-next{right:24px;top:50%;transform:translateY(-50%)}
+#lb-close{right:24px;top:24px}
+.idx{position:fixed;inset:0;background:rgba(28,10,63,.96);z-index:90;overflow:auto;padding:48px 120px}
+.idx-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;color:#fff}
+.idx-head h3{margin:0;font-size:48px;font-weight:800}
+.idx-head .btn{min-height:44px;padding:8px 22px;border-radius:999px;border:1px solid var(--lima);background:transparent;color:var(--lima);cursor:pointer;font-size:20px}
+.idx-g{margin-bottom:28px}
+.idx-g h4{margin:0 0 12px;color:var(--lima);font-size:22px;text-transform:uppercase;letter-spacing:.12em}
+.idx-list{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.idx-b{min-height:44px;text-align:left;padding:12px 18px;border-radius:14px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;font-size:22px}
+
+/* Cursor y hover solo con puntero fino */
+@media (hover:hover) and (pointer:fine){
+  .btn:hover,.idx-b:hover,.lbtn:hover{filter:brightness(1.15)}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none !important}
+}
+
+/* Móvil vertical */
+@media (max-width:767px){
+  :root{--fs-title:40px;--fs-body:18px;--fs-card:18px;--fs-fig:64px;--k:2px;--ph:200px}
+  html,body{overflow:hidden}
+  .stage{position:fixed;inset:0;width:100%;height:100dvh;left:0;top:0;transform:none !important}
+  .slide{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:28px 16px 132px;display:block;-webkit-overflow-scrolling:touch}
+  h2{margin-bottom:22px}
+  h2.long{font-size:34px}
+  .week{font-size:16px}
+  .wsep{width:60px;height:16px}
+  .body{display:block}
+  .body > * + *{margin-top:20px}
+  .grid2,.grid3,.grid5,.nums,.foda,.split16{grid-template-columns:1fr;grid-template-rows:auto}
+  .body > .grid2,.body > .grid3,.body > .grid5{flex:none}
+  .body{overflow:visible}
+  .img-card{flex:none}
+  .img-card img{height:auto}
+  .split16 .menu img,.derv img{height:auto}
+  .foda .card{margin-bottom:0}
+  .card{padding:20px}
+  .img-card{padding:12px}
+  .img-card img,.img-card img.full{width:100%;height:auto;max-height:none}
+  .list li{font-size:18px;padding-left:28px}
+  .lead{font-size:18px}
+  .hbar{grid-template-columns:1fr;gap:6px}
+  .track{height:30px}
+  .hbar .val{text-align:left}
+  .vplot{display:flex}
+  .vcol{width:auto;flex:1}
+  .vfill{width:60%}
+  .vlab{width:auto;flex:1;font-size:14px}
+  .vlab b{font-size:18px}
+  .refline span{font-size:13px}
+  .stg{padding:16px}
+  .stg .fig{font-size:56px}
+  .stg .fdesc{font-size:18px}
+  .sem{min-height:0}
+  .sem .fig{font-size:80px}
+  .split16 .menu img{max-height:none;width:100%}
+  .split16 .right{gap:12px}
+  .nums .fig{font-size:52px}
+  .nums .cap{font-size:17px}
+  .cover{flex-direction:column;align-items:flex-start;gap:24px}
+  .cover h1{font-size:44px;margin-bottom:14px}
+  .cover .sub{font-size:20px;margin-bottom:18px}
+  .cover .pie{font-size:16px}
+  .logo-card{width:100%;padding:24px}
+  .wave-bg{width:420px;height:240px;right:-100px}
+  .foot{left:0;right:0;bottom:0;padding:10px 16px 34px;background:var(--lavanda);font-size:14px;flex-wrap:wrap;gap:8px;border-top:1px solid rgba(140,32,255,.12)}
+  body.dark .foot{background:var(--noche);border-top-color:rgba(203,252,0,.2)}
+  .bars{z-index:6}
+  .foot .btn{min-height:44px;font-size:14px;padding:6px 14px}
+  .bars{left:16px;right:16px;bottom:14px;height:16px;gap:2px}
+  .idx{padding:24px 16px}
+  .idx-list{grid-template-columns:1fr}
+  .idx-head h3{font-size:30px}
+  .lb img{max-width:calc(100vw - 32px);max-height:calc(100vh - 140px)}
+  #lb-prev{left:6px;top:auto;bottom:18px;transform:none}
+  #lb-next{right:6px;top:auto;bottom:18px;transform:none}
+  #lb-close{right:6px;top:6px}
+  .lbtn{min-width:44px;min-height:44px}
+}
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+
+<!-- 1 · Portada -->
+<section class="slide dark" data-group="Portada" aria-label="Diapositiva 1 de 24">
+  <span class="wave-bg" data-wave aria-hidden="true"></span>
+  <div class="cover">
+    <div style="flex:1;min-width:0">
+      <div class="week-row"><span class="week">ANÁLISIS DE USUARIO II · SEMANAS 1 A 11</span></div>
+      <h1>Vozy en el chat de Claro</h1>
+      <p class="sub">Evaluamos al asistente Lili Resolve en el WhatsApp de Claro Colombia</p>
+      <p class="pie">Equipo de tres integrantes · Corte 2 entregado el 15 de octubre de 2026</p>
+    </div>
+    <figure class="logo-card" style="margin:0">
+      <img data-zoom src="media/logo-vozy.png" alt="Logotipo de Vozy: la palabra VOZY en morado, con la O formada por una onda de voz" width="454" height="340">
+    </figure>
+  </div>
+</section>
+
+<!-- 2 · Qué estudiamos -->
+<section class="slide" data-group="Semanas 1–2" aria-label="Diapositiva 2 de 24">
+  <div class="week-row"><span class="week">SEMANAS 1–2</span><span class="wsep" data-wave></span></div>
+  <h2>Un solo canal: el chat</h2>
+  <div class="body">
+    <p class="lead">El *611 no conversa: solo manda al chat. Por eso estudiamos únicamente el WhatsApp de Claro.</p>
+    <figure class="card img-card" style="margin:0"><img data-zoom src="media/contexto.png" alt="Imagen de contexto: el canal 611 de Claro solo remite al chat de WhatsApp" loading="eager"></figure>
+  </div>
+</section>
+
+<!-- 3 · Competidores -->
+<section class="slide" data-group="Semanas 1–2" aria-label="Diapositiva 3 de 24">
+  <div class="week-row"><span class="week">SEMANAS 1–2</span><span class="wsep" data-wave></span></div>
+  <h2>Tres rivales directos y dos indirectos</h2>
+  <div class="body">
+    <p class="ttl" style="margin:0">Directos</p>
+    <div class="grid3">
+      <div class="card"><p class="cap" style="margin:0;font-weight:700">Aivo / Engageware</p></div>
+      <div class="card"><p class="cap" style="margin:0;font-weight:700">Inceptia</p></div>
+      <div class="card"><p class="cap" style="margin:0;font-weight:700">Botmaker</p></div>
+    </div>
+    <p class="ttl" style="margin:0">Indirectos</p>
+    <div class="grid2">
+      <div class="card"><p class="cap" style="margin:0;font-weight:700">Konecta</p><p class="cap muted" style="margin:6px 0 0">atiende con personas</p></div>
+      <div class="card"><p class="cap" style="margin:0;font-weight:700">Zendesk</p><p class="cap muted" style="margin:6px 0 0">artículos de ayuda y tickets</p></div>
+    </div>
+    <p class="lead">Aivo es fuerte en texto e Inceptia en voz.</p>
+  </div>
+</section>
+
+<!-- 4 · FODA -->
+<section class="slide" data-group="Semanas 1–2" aria-label="Diapositiva 4 de 24">
+  <div class="week-row"><span class="week">SEMANAS 1–2</span><span class="wsep" data-wave></span></div>
+  <h2>Lo prefieren, pero no entiende lo que escriben</h2>
+  <div class="body" style="gap:0">
+    <div class="foda">
+      <div class="card"><div class="hd" style="background:#8C20FF">Fortalezas</div>
+        <div class="bd"><ul class="list">
+          <li>Es el canal preferido: 16 de 33 (48 %)</li>
+          <li>La compra de datos fluye sin quiebres</li>
+          <li>Lo escrito queda en pantalla.</li>
+        </ul></div></div>
+      <div class="card"><div class="hd" style="background:#C2410C">Debilidades</div>
+        <div class="bd"><ul class="list">
+          <li>No entiende el texto libre y repite el menú</li>
+          <li>Solo 5 de 33 (15 %) resolvieron a la primera</li>
+          <li>Los cobros no tienen autoservicio</li>
+          <li>9 de 21 tuvieron que repetir su caso al asesor.</li>
+        </ul></div></div>
+      <div class="card"><div class="hd" style="background:#4A12B8">Oportunidades</div>
+        <div class="bd"><ul class="list">
+          <li>Vozy ya ofrece reconocimiento de lenguaje y Claro no lo tiene configurado</li>
+          <li>Hay mejoras baratas.</li>
+        </ul></div></div>
+      <div class="card"><div class="hd" style="background:#5B2A8A">Amenazas</div>
+        <div class="bd"><ul class="list">
+          <li>8 de 21 piden asesor sin probar el bot</li>
+          <li>10 de 33 resolvieron por otro medio y 13 prefieren la llamada.</li>
+        </ul></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · Cinco fuentes -->
+<section class="slide" data-group="Semanas 3–4" aria-label="Diapositiva 5 de 24">
+  <div class="week-row"><span class="week">SEMANAS 3–4</span><span class="wsep" data-wave></span></div>
+  <h2>Cinco fuentes sobre el mismo problema</h2>
+  <div class="body">
+    <div class="grid5">
+      <div class="card" style="text-align:left"><div class="fig">33</div><p class="cap" style="margin:10px 0 0">encuestas</p></div>
+      <div class="card"><div class="fig">5</div><p class="cap" style="margin:10px 0 0">pruebas con clientes</p></div>
+      <div class="card"><div class="fig">7</div><p class="cap" style="margin:10px 0 0">entrevistas</p></div>
+      <div class="card"><div class="fig">1</div><p class="cap" style="margin:10px 0 0">piloto</p></div>
+      <div class="card"><div class="fig">1</div><p class="cap" style="margin:10px 0 0">inspección del bot</p></div>
+    </div>
+    <p class="lead">Cruzamos lo que dicen, lo que hacen y lo que el sistema permite.</p>
+  </div>
+</section>
+
+<!-- 6 · Q1 a Q6 -->
+<section class="slide" data-group="Semanas 3–4" aria-label="Diapositiva 6 de 24">
+  <div class="week-row"><span class="week">SEMANAS 3–4</span><span class="wsep" data-wave></span></div>
+  <h2>Q1 a Q6 ordenan lo que vimos</h2>
+  <div class="body">
+    <div class="grid3" style="grid-template-rows:1fr 1fr;flex:1">
+      <div class="card"><div class="fig" style="font-size:64px">Q1</div><p class="ttl" style="margin:10px 0 6px">No encontró la opción</p><p class="cap muted" style="margin:0">(no aparece y hay que deducirla)</p></div>
+      <div class="card"><div class="fig" style="font-size:64px">Q2</div><p class="ttl" style="margin:10px 0 6px">Interpretó mal</p><p class="cap muted" style="margin:0">(el bot responde a otra intención)</p></div>
+      <div class="card"><div class="fig" style="font-size:64px">Q3</div><p class="ttl" style="margin:10px 0 6px">Se quedó en círculos</p><p class="cap muted" style="margin:0">(repite opciones sin avanzar)</p></div>
+      <div class="card"><div class="fig" style="font-size:64px">Q4</div><p class="ttl" style="margin:10px 0 6px">Mensaje largo o confuso</p><p class="cap muted" style="margin:0">(cuesta identificar la opción)</p></div>
+      <div class="card"><div class="fig" style="font-size:64px">Q5</div><p class="ttl" style="margin:10px 0 6px">No permite corregir</p><p class="cap muted" style="margin:0">(corregir exige reiniciar)</p></div>
+      <div class="card"><div class="fig" style="font-size:64px">Q6</div><p class="ttl" style="margin:10px 0 6px">Derivación mal hecha</p><p class="cap muted" style="margin:0">(el asesor no recibe el historial o tarda)</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · Encuesta (gráfico) -->
+<section class="slide dark" data-group="Semana 5–6" aria-label="Diapositiva 7 de 24">
+  <div class="week-row"><span class="week">SEMANAS 5–6</span><span class="wsep" data-wave></span></div>
+  <h2 class="long">Lo más común: no encontrar la opción y dar vueltas</h2>
+  <div class="body">
+    <p class="cap muted" style="margin:0">Base: 33 personas. Cantidad de personas que tuvieron cada quiebre.</p>
+    <div class="hbars">
+      <div class="hbar"><span>Q1 No encontró la opción</span><div class="track"><div class="fill top" style="--v:.394"></div></div><span class="val">13 (39 %)</span></div>
+      <div class="hbar"><span>Q3 Se quedó en círculos</span><div class="track"><div class="fill" style="--v:.364"></div></div><span class="val">12 (36 %)</span></div>
+      <div class="hbar"><span>Q6 Derivación mal hecha</span><div class="track"><div class="fill" style="--v:.333"></div></div><span class="val">11 (33 %)</span></div>
+      <div class="hbar"><span>Q2 Interpretó mal</span><div class="track"><div class="fill" style="--v:.303"></div></div><span class="val">10 (30 %)</span></div>
+      <div class="hbar"><span>Q5 No permite corregir</span><div class="track"><div class="fill" style="--v:.182"></div></div><span class="val">6 (18 %)</span></div>
+      <div class="hbar"><span>Q4 Mensaje largo o confuso</span><div class="track"><div class="fill" style="--v:.152"></div></div><span class="val">5 (15 %)</span></div>
+    </div>
+    <p class="lead">Nota: 7 de 33 no tuvieron ningún quiebre.</p>
+  </div>
+</section>
+
+<!-- 8 · Mapa de afinidad -->
+<section class="slide" data-group="Semana 5–6" aria-label="Diapositiva 8 de 24">
+  <div class="week-row"><span class="week">SEMANAS 5–6</span><span class="wsep" data-wave></span></div>
+  <h2>Ocho grupos; dos no estaban en nuestra lista</h2>
+  <div class="body">
+    <p class="lead">Las esperas y el abandono del canal salieron de lo que dijo la gente, no de nuestra taxonomía.</p>
+    <figure class="card img-card" style="margin:0"><img data-zoom src="media/afinidad-grupos.png" alt="Mapa de afinidad con ocho grupos de hallazgos de las encuestas y pruebas"></figure>
+  </div>
+</section>
+
+<!-- 9 · Mapa de empatía -->
+<section class="slide" data-group="Semana 5–6" aria-label="Diapositiva 9 de 24">
+  <div class="week-row"><span class="week">SEMANAS 5–6</span><span class="wsep" data-wave></span></div>
+  <h2>Quiere resolver sin llamar</h2>
+  <div class="body">
+    <p class="lead">Pide una persona en cuanto el bot no le entiende.</p>
+    <figure class="card img-card" style="margin:0"><img data-zoom src="media/empatia.png" alt="Mapa de empatía de la persona usuaria del chat de Claro"></figure>
+  </div>
+</section>
+
+<!-- 10 · Embudo -->
+<section class="slide dark" data-group="Semana 7" aria-label="Diapositiva 10 de 24">
+  <div class="week-row"><span class="week">SEMANA 7</span><span class="wsep" data-wave></span></div>
+  <h2 class="long">La pérdida empieza al buscar la opción</h2>
+  <div class="body">
+    <div class="grid5" style="align-items:stretch">
+      <div class="card stg"><span class="lbl">Llega</span><span class="fig">17</span><p class="fdesc" style="margin:0">de 33 escribieron por una falla del servicio</p><span class="desc-bar" style="width:100%"></span></div>
+      <div class="card stg"><span class="lbl">Primer paso</span><span class="fig">10</span><p class="fdesc" style="margin:0">de 33 no tuvieron dificultad para buscar</p><span class="desc-bar" style="width:80%"></span></div>
+      <div class="card stg"><span class="lbl">Vuelve</span><span class="fig">4</span><p class="fdesc" style="margin:0">de 6 entrevistados dejaron el chat</p><span class="desc-bar" style="width:60%"></span></div>
+      <div class="card stg"><span class="lbl">Resuelve</span><span class="fig">15</span><p class="fdesc" style="margin:0">de 33 resolvieron, solo 3 sin asesor</p><span class="desc-bar" style="width:40%"></span></div>
+      <div class="card stg"><span class="lbl">Recomienda</span><span class="fig">16</span><p class="fdesc" style="margin:0">de 33 prefieren el chat</p><span class="desc-bar" style="width:20%"></span></div>
+    </div>
+    <p class="cap muted" style="margin:0">El nombre del modelo es AARRR: llegar, primer paso, volver, resolver y recomendar.</p>
+  </div>
+</section>
+
+<!-- 11 · Cifras que engañan -->
+<section class="slide" data-group="Semana 7" aria-label="Diapositiva 11 de 24">
+  <div class="week-row"><span class="week">SEMANA 7</span><span class="wsep" data-wave></span></div>
+  <h2>Que lo prefieran no dice qué cambiar</h2>
+  <div class="body">
+    <div class="grid2" style="flex:1;align-items:stretch">
+      <div class="card" style="display:flex;flex-direction:column;justify-content:center">
+        <div class="fig">16 de 33</div>
+        <p class="lead" style="margin:16px 0 0">prefieren el chat (se ve bien, no guía decisiones)</p>
+      </div>
+      <div class="stack">
+        <div class="card" style="flex:1;display:flex;flex-direction:column;justify-content:center"><div class="fig" style="font-size:96px">3 de 33</div><p class="lead" style="margin:12px 0 0">resolvieron sin asesor</p></div>
+        <div class="card" style="flex:1;display:flex;flex-direction:column;justify-content:center"><div class="fig" style="font-size:96px">23 de 33</div><p class="lead" style="margin:12px 0 0">tropezaron al buscar (guían decisiones)</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 · Cinco ideas -->
+<section class="slide" data-group="Semana 7" aria-label="Diapositiva 12 de 24">
+  <div class="week-row"><span class="week">SEMANA 7</span><span class="wsep" data-wave></span></div>
+  <h2 class="long">Probamos la H3: tras dos fallos, dejar elegir</h2>
+  <div class="body">
+    <p class="cap muted" style="margin:0">Lista ordenada por puntaje, marcada «preliminar»</p>
+    <div class="stack" style="flex:1;min-height:0;gap:10px">
+      <div class="card" style="display:grid;grid-template-columns:140px 170px 1fr;align-items:center;gap:24px;padding:12px 32px;flex:1;min-height:0"><span class="fig" style="font-size:48px">H1</span><span class="cap" style="font-weight:800;color:var(--violeta-prof)">6,0</span><span class="cap">opciones en lista numerada breve</span></div>
+      <div class="card" style="display:grid;grid-template-columns:140px 170px 1fr;align-items:center;gap:24px;padding:12px 32px;flex:1;min-height:0"><span class="fig" style="font-size:48px">H3</span><span class="cap" style="font-weight:800;color:var(--violeta-prof)">5,3</span><span class="cap">tras dos mensajes no reconocidos, ofrecer opciones y asesor</span></div>
+      <div class="card" style="display:grid;grid-template-columns:140px 170px 1fr;align-items:center;gap:24px;padding:12px 32px;flex:1;min-height:0"><span class="fig" style="font-size:48px">H4</span><span class="cap" style="font-weight:800;color:var(--violeta-prof)">5,0</span><span class="cap">interpretar el texto libre y confirmar</span></div>
+      <div class="card" style="display:grid;grid-template-columns:140px 170px 1fr;align-items:center;gap:24px;padding:12px 32px;flex:1;min-height:0"><span class="fig" style="font-size:48px">H2</span><span class="cap" style="font-weight:800;color:var(--violeta-prof)">4,0</span><span class="cap">opción fija para volver atrás</span></div>
+      <div class="card" style="display:grid;grid-template-columns:140px 170px 1fr;align-items:center;gap:24px;padding:12px 32px;flex:1;min-height:0"><span class="fig" style="font-size:48px">H5</span><span class="cap" style="font-weight:800;color:var(--violeta-prof)">3,0</span><span class="cap">pasar el historial al asesor</span></div>
+    </div>
+    <p class="cap muted" style="margin:0">Aclaración: Puntaje = impacto × confianza ÷ esfuerzo. Los valores son propuesta del equipo.</p>
+  </div>
+</section>
+
+<!-- 13 · Embudo de resultados -->
+<section class="slide dark" data-group="Semana 8" aria-label="Diapositiva 13 de 24">
+  <div class="week-row"><span class="week">SEMANA 8</span><span class="wsep" data-wave></span></div>
+  <h2 class="long">El bot solo resuelve 1 de cada 11 casos</h2>
+  <div class="body">
+    <p class="lead">De 33 personas, 15 resolvieron su problema (45 %) y solo 3 lo hicieron sin asesor (9 %); 12 de las 15 pasaron por un asesor.</p>
+    <figure class="card img-card" style="margin:0"><img data-zoom src="media/funnel.png" alt="Embudo de resultados: de 33 personas, 15 resolvieron y 3 sin asesor"></figure>
+  </div>
+</section>
+
+<!-- 14 · Toques -->
+<section class="slide" data-group="Semana 8" aria-label="Diapositiva 14 de 24">
+  <div class="week-row"><span class="week">SEMANA 8</span><span class="wsep" data-wave></span></div>
+  <h2>Los botones avanzan; la caja de texto no</h2>
+  <div class="body">
+    <p class="lead">En lugar de mapas de calor, que no existen en un chat, mapeamos los toques en tres pantallas del bot (sesiones A a D).</p>
+    <figure class="card img-card" style="margin:0"><img data-zoom src="media/toques.png" alt="Mapa de toques en tres pantallas del bot, sesiones A a D"></figure>
+  </div>
+</section>
+
+<!-- 15 · Dos conversaciones -->
+<section class="slide" data-group="Semana 8" aria-label="Diapositiva 15 de 24">
+  <div class="week-row"><span class="week">SEMANA 8</span><span class="wsep" data-wave></span></div>
+  <h2 class="long">Una termina en un asesor sin preguntar; otra se resuelve en 3 minutos</h2>
+  <div class="body">
+    <p class="lead">La sesión D deriva sola al asesor; la E resuelve por botones en 180 segundos.</p>
+    <figure class="card img-card" style="margin:0"><img data-zoom src="media/sesiones.png" alt="Comparación de las sesiones D y E del bot"></figure>
+  </div>
+</section>
+
+<!-- 16 · Por dentro del bot -->
+<section class="slide" data-group="Semana 8" aria-label="Diapositiva 16 de 24">
+  <div class="week-row"><span class="week">SEMANA 8</span><span class="wsep" data-wave></span></div>
+  <h2 class="long">El asesor está en el sexto lugar y el bot deriva al segundo fallo</h2>
+  <div class="body">
+    <div class="split16">
+      <figure class="card menu" style="margin:0"><img data-zoom src="media/bot-menu.png" alt="Menú del bot con 8 opciones; Hablar con asesor aparece en sexto lugar"></figure>
+      <div class="right">
+        <div class="nums">
+          <div class="card"><div class="fig">8</div><p class="cap" style="margin:8px 0 0">opciones en el menú</p></div>
+          <div class="card"><div class="fig">6.º</div><p class="cap" style="margin:8px 0 0">«Hablar con asesor» en el 6.º lugar</p></div>
+          <div class="card"><div class="fig">0 de 5</div><p class="cap" style="margin:8px 0 0">frases reales llegaron a la opción correcta</p></div>
+          <div class="card"><div class="fig">3</div><p class="cap" style="margin:8px 0 0">toques por cada elección de lista</p></div>
+          <div class="card" style="grid-column:1 / -1"><div class="fig">10</div><p class="cap" style="margin:8px 0 0">espera de 10 minutos</p></div>
+        </div>
+        <figure class="card derv" style="margin:0;flex:1;min-height:0"><img data-zoom src="media/bot-derivacion.png" alt="Pantalla de derivación del bot al asesor"></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 17 · A/B -->
+<section class="slide s17" data-group="Semana 9" aria-label="Diapositiva 17 de 24">
+  <div class="week-row"><span class="week">SEMANA 9</span><span class="wsep" data-wave></span></div>
+  <h2>A deriva a la fuerza; B deja elegir</h2>
+  <div class="body" style="flex-direction:row;gap:28px">
+    <figure class="card img-card" style="margin:0;flex:0 0 1100px"><img data-zoom src="media/variantes.png" alt="Variantes A y B del experimento: A deriva a la fuerza, B deja elegir"></figure>
+    <div class="stack" style="flex:1;min-width:0;min-height:0;overflow:hidden;gap:14px">
+      <div class="card"><p class="cap" style="margin:0">Medida principal: contención (casos resueltos sin asesor).</p></div>
+      <div class="card"><p class="cap" style="margin:0">Contraparte: abandonos.</p></div>
+      <div class="card"><p class="cap" style="margin:0">B gana si supera a A en 20 puntos de contención sin que los abandonos suban más de 10.</p></div>
+      <div class="card"><p class="cap" style="margin:0">Son viables 12 sesiones por grupo (harían falta 93 a 97 para certeza estadística) · 24 sesiones en 2 semanas · tasa base ≈ 40 % (estimación).</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 18 · SUS -->
+<section class="slide dark" data-group="Semana 10" aria-label="Diapositiva 18 de 24">
+  <div class="week-row"><span class="week">SEMANA 10</span><span class="wsep" data-wave></span></div>
+  <h2 class="long">Solo la compra de paquete la resolvió sola</h2>
+  <div class="body">
+    <div class="grid3" style="flex:none">
+      <div class="card"><div class="fig">2 de 5</div><p class="cap" style="margin:8px 0 0">éxito sin asesor (B y E)</p></div>
+      <div class="card"><p class="ttl" style="margin:0">Tiempos aproximados</p><p class="cap" style="margin:6px 0 0">300 · 180 · 840 · 180 · 180 segundos</p></div>
+      <div class="card"><p class="ttl" style="margin:0">Errores</p><p class="cap" style="margin:6px 0 0">mensajes no reconocidos: solo en la sesión D.</p></div>
+    </div>
+    <div class="card" style="flex:1;min-height:0;padding:24px 36px">
+      <p class="cap" style="margin:0 0 12px;font-weight:700">Puntuación de usabilidad (SUS), escala 0–100 · Promedio 56,0 (por debajo de 68)</p>
+      <div class="vplot">
+        <div class="refline"><span>media de referencia 68</span></div>
+        <div class="vcol"><div class="vfill" style="--v:42.5"></div></div>
+        <div class="vcol"><div class="vfill top" style="--v:82.5"></div></div>
+        <div class="vcol"><div class="vfill" style="--v:20"></div></div>
+        <div class="vcol"><div class="vfill" style="--v:45"></div></div>
+        <div class="vcol"><div class="vfill top" style="--v:90"></div></div>
+      </div>
+      <div class="vlabels">
+        <div class="vlab"><b>A</b> · 42,5</div>
+        <div class="vlab"><b>B</b> · 82,5</div>
+        <div class="vlab"><b>C</b> · 20</div>
+        <div class="vlab"><b>D</b> · 45</div>
+        <div class="vlab"><b>E</b> · 90</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 19 · Gravedad -->
+<section class="slide" data-group="Semana 10" aria-label="Diapositiva 19 de 24">
+  <div class="week-row"><span class="week">SEMANA 10</span><span class="wsep" data-wave></span></div>
+  <h2 class="long">Lo peor: no entiende el texto libre y repite el menú</h2>
+  <div class="body">
+    <p class="lead">14 problemas, dos con gravedad 5 (impide terminar). Severidad preliminar de un solo evaluador.</p>
+    <figure class="card img-card" style="margin:0"><img data-zoom src="media/rainbow.png" alt="Problemas de usabilidad ordenados por gravedad"></figure>
+  </div>
+</section>
+
+<!-- 20 · Heurísticas -->
+<section class="slide" data-group="Semana 10" aria-label="Diapositiva 20 de 24">
+  <div class="week-row"><span class="week">SEMANA 10</span><span class="wsep" data-wave></span></div>
+  <h2 class="long">Lo más grave: hablar el idioma del usuario y recuperarse de errores</h2>
+  <div class="body">
+    <p class="lead">En la revisión con las 10 heurísticas de Nielsen, las más graves (severidad 4) fueron la 2, la 5 y la 9.</p>
+    <div class="grid3" style="flex:1;align-items:stretch">
+      <div class="card" style="display:flex;flex-direction:column;justify-content:center"><div class="fig">2</div><p class="ttl" style="margin:10px 0 0">Lenguaje del usuario</p></div>
+      <div class="card" style="display:flex;flex-direction:column;justify-content:center"><div class="fig">5</div><p class="ttl" style="margin:10px 0 0">Prevenir errores</p></div>
+      <div class="card" style="display:flex;flex-direction:column;justify-content:center"><div class="fig">9</div><p class="ttl" style="margin:10px 0 0">Ayudar a reconocer y recuperarse de errores</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 21 · Accesibilidad -->
+<section class="slide" data-group="Semana 11" aria-label="Diapositiva 21 de 24">
+  <div class="week-row"><span class="week">SEMANA 11</span><span class="wsep" data-wave></span></div>
+  <h2 class="long">Las esperas fijas y el video sin subtítulos son lo peor</h2>
+  <div class="body">
+    <div class="grid3">
+      <div class="sem" style="--c:#2F7D4F"><span class="cap">Cumplen</span><span class="fig">4</span></div>
+      <div class="sem a" style="--c:#B7791F"><span class="cap">A medias</span><span class="fig">5</span></div>
+      <div class="sem" style="--c:#C2410C"><span class="cap">Fallan</span><span class="fig">2</span></div>
+    </div>
+    <p class="cap muted" style="margin:0">11 criterios de WCAG 2.1 nivel AA, revisados a mano porque WAVE y axe no aplican a un chat.</p>
+    <div class="grid3">
+      <div class="card"><p class="cap" style="margin:0">contraste de los botones en tema claro 4,52 a 1 (justo en el mínimo)</p></div>
+      <div class="card"><p class="cap" style="margin:0">el video de ayuda dura 70 s y no tiene subtítulos</p></div>
+      <div class="card"><p class="cap" style="margin:0">el lector de pantalla lee los emojis y los asteriscos.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 22 · Dos personas -->
+<section class="slide s22" data-group="Síntesis" aria-label="Diapositiva 22 de 24">
+  <div class="week-row"><span class="week">SÍNTESIS</span><span class="wsep" data-wave></span></div>
+  <h2 class="long">Una deja el chat; otra lo usa para lo simple</h2>
+  <div class="body">
+    <div class="grid2" style="flex:1;align-items:stretch">
+      <div class="card">
+        <p class="ttl" style="margin:0">Carmen</p>
+        <p class="cap muted" style="margin:6px 0 16px">«Prefiero hablar con alguien» (nombre inventado)</p>
+        <ul class="list">
+          <li>4 de 6 entrevistados dejaron el chat; 13 de 33 prefieren la llamada.</li>
+          <li>Escribe por una falla o un cobro.</li>
+          <li>Necesita saber pronto si el bot puede y cuánto falta para el asesor.</li>
+        </ul>
+        <p class="quote">«Es más fácil hablar con un humano»</p>
+      </div>
+      <div class="card">
+        <p class="ttl" style="margin:0">Daniel</p>
+        <p class="cap muted" style="margin:6px 0 16px">«Para lo simple, el chat» (nombre inventado)</p>
+        <ul class="list">
+          <li>2 de 6 lo siguen usando; 16 de 33 prefieren el chat.</li>
+          <li>Escribe por saldo, paquetes y recargas.</li>
+          <li>Necesita que entienda frases, no solo botones.</li>
+        </ul>
+        <p class="quote">«Para el saldo y los paquetes sirve bien»</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 23 · Recorrido -->
+<section class="slide" data-group="Síntesis" aria-label="Diapositiva 23 de 24">
+  <div class="week-row"><span class="week">SÍNTESIS</span><span class="wsep" data-wave></span></div>
+  <h2 class="long">El peor momento: explicar de nuevo y que el bot repita el menú</h2>
+  <div class="body">
+    <figure class="card img-card" style="margin:0"><img data-zoom src="media/journey.png" alt="Recorrido del usuario por el chat, con el momento de explicar de nuevo y el menú repetido"></figure>
+  </div>
+</section>
+
+<!-- 24 · Cierre -->
+<section class="slide dark" data-group="Semanas 12–16" aria-label="Diapositiva 24 de 24">
+  <span class="wave-bg" data-wave aria-hidden="true"></span>
+  <div class="week-row"><span class="week">SEMANAS 12–16</span><span class="wsep" data-wave></span></div>
+  <h2 class="long" style="position:relative;z-index:1">Lo que encontramos y lo que sigue</h2>
+  <div class="body" style="position:relative;z-index:1">
+    <div class="grid2" style="flex:1;align-items:stretch">
+      <div class="card">
+        <p class="ttl" style="margin:0">Hallazgos</p>
+        <ul class="list" style="margin-top:14px">
+          <li>1 de cada 11 casos se resuelve sin asesor</li>
+          <li>23 de 33 tropezaron al buscar la opción</li>
+          <li>Los quiebres los provoca el texto libre; con botones no hubo ninguno</li>
+          <li>El bot deriva al segundo mensaje no reconocido, sin preguntar</li>
+          <li>4 de 6 entrevistados dejaron el chat tras un mal intento.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <p class="ttl" style="margin:0">Plan</p>
+        <ul class="list" style="margin-top:14px">
+          <li>S12 inclusión y sesgos + inicio del experimento</li>
+          <li>S13 ética y privacidad + fin del experimento</li>
+          <li>S14 repositorio y service blueprint</li>
+          <li>S15 storytelling</li>
+          <li>S16 presentación final.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<!-- Barra de progreso, pie y contador (fuera de las diapositivas, dentro del lienzo) -->
+<div class="bars" id="bars" aria-hidden="true"></div>
+<div class="foot">
+  <div class="left">
+    <span>Vozy · Análisis de Usuario II</span>
+    <button type="button" class="btn" id="idx-btn" aria-haspopup="dialog">Índice (G)</button>
+  </div>
+  <span class="count" id="count" aria-live="polite">01 / 24</span>
+</div>
+
+<!-- Índice -->
+<div class="idx" id="idx" role="dialog" aria-modal="true" aria-label="Índice de diapositivas" hidden>
+  <div class="idx-head">
+    <h3>Índice</h3>
+    <button type="button" class="btn" id="idx-close">Cerrar</button>
+  </div>
+  <div id="idx-groups"></div>
+</div>
+
+<!-- Lightbox -->
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Imagen ampliada" hidden>
+  <button type="button" class="lbtn" id="lb-prev" aria-label="Imagen anterior">‹</button>
+  <img id="lb-img" src="" alt="">
+  <button type="button" class="lbtn" id="lb-next" aria-label="Imagen siguiente">›</button>
+  <button type="button" class="lbtn" id="lb-close" aria-label="Cerrar imagen">×</button>
+</div>
+
+<script>
+(function(){
+  var H=[12,28,52,80,100,80,52,28,12];
+  function wave(){return '<svg viewBox="0 0 90 100" aria-hidden="true" focusable="false">'+H.map(function(h,i){return '<rect x="'+(i*10)+'" y="'+(100-h)+'" width="6" height="'+h+'" rx="3"/>';}).join('')+'</svg>';}
+  document.querySelectorAll('[data-wave]').forEach(function(el){el.innerHTML=wave();});
+
+  var stage=document.getElementById('stage');
+  function fit(){
+    if(window.innerWidth<768){stage.style.transform='';return;}
+    var s=Math.min(window.innerWidth/1920,window.innerHeight/1080);
+    stage.style.transform='translate(-50%,-50%) scale('+s+')';
+  }
+  window.addEventListener('resize',fit); fit();
+
+  var slides=Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var N=slides.length;
+  var counter=document.getElementById('count');
+
+  slides.forEach(function(s){
+    var h=s.querySelector('h2');
+    if(h && h.textContent.length>46) h.classList.add('long');
+  });
+
+  var barsBox=document.getElementById('bars'), B=48, bars=[];
+  for(var i=0;i<B;i++){
+    var t=i/(B-1), b=document.createElement('i');
+    b.style.height=(12+88*Math.exp(-Math.pow((t-0.5)/0.22,2)))+'%';
+    barsBox.appendChild(b); bars.push(b);
+  }
+
+  var cur=0;
+  function show(i){
+    if(i<0) i=0; if(i>N-1) i=N-1;
+    cur=i;
+    slides.forEach(function(s,k){
+      var on=(k===i);
+      s.classList.toggle('active',on);
+      s.setAttribute('aria-hidden',String(!on));
+    });
+    document.body.classList.toggle('dark',slides[i].classList.contains('dark'));
+    counter.textContent=String(i+1).padStart(2,'0')+' / '+N;
+    var lit=Math.round(i/(N-1)*(B-1));
+    bars.forEach(function(b,k){b.classList.toggle('on',k<=lit);});
+    var hash='#'+(i+1);
+    if(location.hash!==hash){try{history.replaceState(null,'',hash);}catch(e){}}
+  }
+  function next(){show(cur+1);}
+  function prev(){show(cur-1);}
+
+  var h0=parseInt(location.hash.slice(1),10);
+  show(isNaN(h0)?0:h0-1);
+  window.addEventListener('hashchange',function(){
+    var h=parseInt(location.hash.slice(1),10);
+    if(!isNaN(h) && h-1!==cur) show(h-1);
+  });
+
+  // Índice agrupado por semana
+  var groups=[];
+  slides.forEach(function(s,k){
+    var g=s.getAttribute('data-group');
+    var G=groups[groups.length-1];
+    if(!G || G.name!==g){G={name:g,items:[]}; groups.push(G);}
+    G.items.push(k);
+  });
+  var idxGroups=document.getElementById('idx-groups');
+  groups.forEach(function(G){
+    var wrap=document.createElement('div'); wrap.className='idx-g';
+    var hh=document.createElement('h4'); hh.textContent=G.name; wrap.appendChild(hh);
+    var list=document.createElement('div'); list.className='idx-list';
+    G.items.forEach(function(k){
+      var bt=document.createElement('button');
+      bt.type='button'; bt.className='idx-b'; bt.setAttribute('data-go',String(k));
+      var t2=slides[k].querySelector('h2');
+      bt.textContent=String(k+1).padStart(2,'0')+'  '+(t2?t2.textContent:'');
+      list.appendChild(bt);
+    });
+    wrap.appendChild(list); idxGroups.appendChild(wrap);
+  });
+  var idx=document.getElementById('idx'), idxOpen=false;
+  function openIdx(){idx.hidden=false; idxOpen=true; document.getElementById('idx-close').focus();}
+  function closeIdx(){idx.hidden=true; idxOpen=false;}
+  document.getElementById('idx-btn').addEventListener('click',openIdx);
+  document.getElementById('idx-close').addEventListener('click',closeIdx);
+  idx.addEventListener('click',function(e){if(e.target===idx) closeIdx();});
+  idxGroups.addEventListener('click',function(e){
+    var b=e.target.closest('[data-go]');
+    if(b){closeIdx(); show(parseInt(b.getAttribute('data-go'),10));}
+  });
+
+  // Lightbox
+  var zooms=Array.prototype.slice.call(document.querySelectorAll('img[data-zoom]'));
+  var lb=document.getElementById('lb'), lbImg=document.getElementById('lb-img'), lbI=0, lbOpen=false;
+  function lbShow(i){
+    lbI=(i+zooms.length)%zooms.length;
+    lbImg.setAttribute('src',zooms[lbI].getAttribute('src'));
+    lbImg.setAttribute('alt',zooms[lbI].getAttribute('alt')||'');
+  }
+  function lbOpenAt(i){lbShow(i); lb.hidden=false; lbOpen=true; document.getElementById('lb-close').focus();}
+  function lbClose(){lb.hidden=true; lbOpen=false;}
+  zooms.forEach(function(img,i){img.addEventListener('click',function(){lbOpenAt(i);});});
+  document.getElementById('lb-prev').addEventListener('click',function(e){e.stopPropagation(); lbShow(lbI-1);});
+  document.getElementById('lb-next').addEventListener('click',function(e){e.stopPropagation(); lbShow(lbI+1);});
+  document.getElementById('lb-close').addEventListener('click',function(e){e.stopPropagation(); lbClose();});
+  lb.addEventListener('click',function(e){if(e.target===lb) lbClose();});
+
+  // Teclado
+  function toggleFs(){
+    try{
+      if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }catch(err){}
+  }
+  document.addEventListener('keydown',function(e){
+    if(lbOpen){
+      if(e.key==='Escape') lbClose();
+      else if(e.key==='ArrowRight') lbShow(lbI+1);
+      else if(e.key==='ArrowLeft') lbShow(lbI-1);
+      return;
+    }
+    if(idxOpen){
+      if(e.key==='Escape') closeIdx();
+      return;
+    }
+    switch(e.key){
+      case 'ArrowRight': case 'PageDown': e.preventDefault(); next(); break;
+      case 'ArrowLeft': case 'PageUp': e.preventDefault(); prev(); break;
+      case ' ': e.preventDefault(); if(e.shiftKey) prev(); else next(); break;
+      case 'Home': show(0); break;
+      case 'End': show(N-1); break;
+      case 'f': case 'F': toggleFs(); break;
+      case 'g': case 'G': openIdx(); break;
+    }
+  });
+
+  // Gestos táctiles
+  var sx=0, sy=0;
+  stage.addEventListener('touchstart',function(e){sx=e.touches[0].clientX; sy=e.touches[0].clientY;},{passive:true});
+  stage.addEventListener('touchend',function(e){
+    var t=e.changedTouches[0], dx=t.clientX-sx, dy=t.clientY-sy;
+    if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)*1.5){ if(dx<0) next(); else prev(); }
+  },{passive:true});
+
+  // Clic en los costados (solo escritorio)
+  stage.addEventListener('click',function(e){
+    if(window.innerWidth<768) return;
+    if(e.target.closest('img,button,a')) return;
+    var r=stage.getBoundingClientRect();
+    var x=(e.clientX-r.left)/r.width;
+    if(x<0.12) prev(); else if(x>0.88) next();
+  });
+})();
+</script>
+</body>
+</html>
