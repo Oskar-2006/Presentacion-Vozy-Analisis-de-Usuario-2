@@ -91,16 +91,16 @@ h2.long{font-size:60px}
 .hbars{display:flex;flex-direction:column;gap:18px}
 .hbar{display:grid;grid-template-columns:600px 1fr 180px;align-items:center;gap:24px;font-size:var(--fs-card)}
 .track{height:54px;background:rgba(255,255,255,.12);border-radius:12px;overflow:hidden}
-.fill{height:100%;width:100%;background:var(--violeta);border-radius:12px;transform-origin:left;transform:scaleX(0);transition:transform 250ms ease-out}
-.slide.active .fill{transform:scaleX(var(--v))}
+.fill{height:100%;width:100%;background:var(--violeta);border-radius:12px;transform-origin:left;transform:scaleX(0);transition:transform 450ms cubic-bezier(.22,.61,.36,1)}
+.slide.settled .fill{transform:scaleX(var(--v))}
 .fill.top{background:var(--lima)}
 .hbar .val{text-align:right;font-weight:700}
 
 /* Barras verticales SUS (18) */
 .vplot{position:relative;height:var(--ph);border-bottom:2px solid rgba(255,255,255,.45);display:flex;justify-content:space-around;align-items:flex-end;margin-top:8px}
 .vcol{width:200px;height:100%;display:flex;align-items:flex-end;justify-content:center}
-.vfill{width:120px;height:calc(var(--v) * var(--k));background:var(--violeta);border-radius:14px 14px 0 0;transform-origin:bottom;transform:scaleY(0);transition:transform 250ms ease-out}
-.slide.active .vfill{transform:scaleY(1)}
+.vfill{width:120px;height:calc(var(--v) * var(--k));background:var(--violeta);border-radius:14px 14px 0 0;transform-origin:bottom;transform:scaleY(0);transition:transform 450ms cubic-bezier(.22,.61,.36,1)}
+.slide.settled .vfill{transform:scaleY(1)}
 .vfill.top{background:var(--lima)}
 .refline{position:absolute;left:0;right:0;bottom:calc(68 * var(--k));border-top:3px dashed var(--lima);pointer-events:none}
 .refline span{position:absolute;left:0;bottom:8px;font-size:22px;font-weight:700;color:var(--lima);background:transparent;white-space:nowrap}
@@ -118,8 +118,8 @@ h2.long{font-size:60px}
 .s17 .stack .card{padding:22px 30px}
 .stg .lbl{font-size:22px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:var(--violeta)}
 .slide.dark .stg .lbl{color:var(--lima)}
-.desc-bar{height:14px;border-radius:7px;background:var(--violeta);transform-origin:left;transform:scaleX(0);transition:transform 250ms ease-out}
-.slide.active .desc-bar{transform:scaleX(1)}
+.desc-bar{height:14px;border-radius:7px;background:var(--violeta);transform-origin:left;transform:scaleX(0);transition:transform 450ms cubic-bezier(.22,.61,.36,1)}
+.slide.settled .desc-bar{transform:scaleX(1)}
 
 /* Semáforo (21) */
 .sem{background:var(--c);color:#fff;border-radius:24px;padding:28px 32px;display:flex;flex-direction:column;justify-content:space-between;gap:10px;min-height:250px}
@@ -1064,7 +1064,7 @@ body.no-motion *,body.no-motion *::before,body.no-motion *::after{transition:non
     e.stopPropagation();
     show(Math.round(barAt(e)/(B-1)*(N-1)));
   });
-  var cur=0, booted=false, sweepTok=0;
+  var cur=0, booted=false, sweepTok=0, settleT=null;
   function endSweep(){
     slides.forEach(function(s){
       s.getAnimations().forEach(function(an){ if(!(an instanceof CSSTransition)) an.cancel(); });
@@ -1180,6 +1180,14 @@ body.no-motion *,body.no-motion *::before,body.no-motion *::after{transition:non
     if(location.hash!==hash){try{history.replaceState(null,'',hash);}catch(e){}}
     if(doSweep) sweep(from,i,seq,sdur);
     else if(booted && !noMo && i!==from && wasDark!==isDark) panFx(from,i);
+    // las animaciones internas (barras, etc.) arrancan cuando la transición termina
+    clearTimeout(settleT);
+    (function(idx,wait){
+      settleT=setTimeout(function(){
+        if(cur!==idx) return;
+        slides.forEach(function(sl,k){ sl.classList.toggle('settled',k===idx); });
+      },wait);
+    })(i, booted?(sdur+60):450);
   }
   function next(){show(cur+1);}
   function prev(){show(cur-1);}
