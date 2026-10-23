@@ -24,7 +24,7 @@ Línea final: Aivo es fuerte en texto e Inceptia en voz.
 ## 4 · FODA (SEMANAS 1–2)
 Título: Lo prefieren, pero no entiende lo que escriben
 Cuatro cuadrantes:
-- Fortalezas: Es el canal preferido: 16 de 33 (48 %) · La compra de datos fluye sin quiebres · Lo escrito queda en pantalla.
+- Fortalezas: Es el canal preferido: 16 de 33 (48 %) · La compra de datos fluye sin puntos de fricción · Lo escrito queda en pantalla.
 - Debilidades: No entiende el texto libre y repite el menú · Solo 5 de 33 (15 %) resolvieron a la primera · Los cobros no tienen autoservicio · 9 de 21 tuvieron que repetir su caso al asesor.
 - Oportunidades: Vozy ya ofrece reconocimiento de lenguaje y Claro no lo tiene configurado · Hay mejoras baratas.
 - Amenazas: 8 de 21 piden asesor sin probar el bot · 10 de 33 resolvieron por otro medio y 13 prefieren la llamada.
@@ -35,15 +35,15 @@ Cifras grandes en fila: 33 encuestas · 5 pruebas con clientes · 7 entrevistas 
 Línea: Cruzamos lo que dicen, lo que hacen y lo que el sistema permite.
 
 ## 6 · Seis formas de fallar (SEMANAS 3–4)
-Título: Q1 a Q6 ordenan lo que vimos
-Seis tarjetas numeradas (texto exacto):
-Q1 No encontró la opción (no aparece y hay que deducirla) · Q2 Interpretó mal (el bot responde a otra intención) · Q3 Se quedó en círculos (repite opciones sin avanzar) · Q4 Mensaje largo o confuso (cuesta identificar la opción) · Q5 No permite corregir (corregir exige reiniciar) · Q6 Derivación mal hecha (el asesor no recibe el historial o tarda).
+Título: Seis puntos de fricción ordenan lo que vimos
+Seis tarjetas numeradas del 1 al 6 (texto exacto):
+1 No encontró la opción (no aparece y hay que deducirla) · 2 Interpretó mal (el bot responde a otra intención) · 3 Se quedó en círculos (repite opciones sin avanzar) · 4 Mensaje largo o confuso (cuesta identificar la opción) · 5 No permite corregir (corregir exige reiniciar) · 6 Derivación mal hecha (el asesor no recibe el historial o tarda).
 
 ## 7 · Lo que dijo la encuesta (SEMANAS 5–6)
 Título: Lo más común: no encontrar la opción y dar vueltas
 Gráfico de barras horizontales hecho en CSS (base 33 personas), barras moradas, la más larga con acento lima sobre fondo noche:
-Q1 13 (39 %) · Q3 12 (36 %) · Q6 11 (33 %) · Q2 10 (30 %) · Q5 6 (18 %) · Q4 5 (15 %).
-Nota: 7 de 33 no tuvieron ningún quiebre.
+1 · No encontró la opción 13 (39 %) · 3 · Se quedó en círculos 12 (36 %) · 6 · Derivación mal hecha 11 (33 %) · 2 · Interpretó mal 10 (30 %) · 5 · No permite corregir 6 (18 %) · 4 · Mensaje largo o confuso 5 (15 %).
+Nota: 7 de 33 no tuvieron ningún punto de fricción.
 
 ## 8 · Mapa de afinidad (SEMANAS 5–6)
 Título: Ocho grupos; dos no estaban en nuestra lista
@@ -78,7 +78,7 @@ Imagen: funnel.png (ancho completo).
 
 ## 14 · Dónde tocan (SEMANA 8)
 Título: Los botones avanzan; la caja de texto no
-Mensaje: En lugar de mapas de calor, que no existen en un chat, mapeamos los toques en tres pantallas del bot (sesiones A a D).
+Mensaje: En lugar de mapas de calor, que no existen en un chat, mapeamos los toques en tres pantallas del bot (sesiones A a D; la E, de una línea prepago, no pasó por ellas).
 Imagen: toques.png.
 
 ## 15 · Dos conversaciones (SEMANA 8)
@@ -129,5 +129,5 @@ Imagen: journey.png (ancho completo).
 
 ## 24 · Cierre (SEMANAS 12–16)
 Título: Lo que encontramos y lo que sigue
-Cinco hallazgos: 1 de cada 11 casos se resuelve sin asesor · 23 de 33 tropezaron al buscar la opción · Los quiebres los provoca el texto libre; con botones no hubo ninguno · El bot deriva al segundo mensaje no reconocido, sin preguntar · 4 de 6 entrevistados dejaron el chat tras un mal intento.
+Cinco hallazgos: 1 de cada 11 casos se resuelve sin asesor · 23 de 33 tropezaron al buscar la opción · Los puntos de fricción los provoca el texto libre; con botones no hubo ninguno · El bot deriva al segundo mensaje no reconocido, sin preguntar · 4 de 6 entrevistados dejaron el chat tras un mal intento.
 Plan: S12 inclusión y sesgos + inicio del experimento · S13 ética y privacidad + fin del experimento · S14 repositorio y service blueprint · S15 storytelling · S16 presentación final.

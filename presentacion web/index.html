@@ -240,11 +240,11 @@ body.dark .bars i.on{background:var(--lima)}
 .n-l{background:#DCCFF7}
 .n-g{background:#DDF5A8}
 .afg{flex:1;min-height:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:1fr;gap:14px}
-.af{background:#EBE3FB;border:1px solid rgba(140,32,255,.18);border-radius:20px;padding:0 16px 12px;overflow:hidden;display:flex;flex-direction:column;min-height:0}
-.afb{height:8px;margin:0 -16px 12px}
+.af{background:#EBE3FB;border:1px solid rgba(140,32,255,.18);border-radius:20px;padding:0 16px 8px;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+.afb{height:8px;margin:0 -16px 8px;flex-shrink:0}
 .afh{margin:0;font-size:28px;font-weight:800;color:var(--violeta-prof);line-height:1.15}
-.afd{margin:6px 0 0;font-size:22px;color:var(--secundario);line-height:1.15}
-.afn{margin:6px 0 0;padding:8px 12px;border-radius:12px;font-size:22px;line-height:1.15;color:var(--texto)}
+.afd{margin:4px 0 0;font-size:22px;color:var(--secundario);line-height:1.15}
+.afn{margin:5px 0 0;padding:6px 12px;border-radius:12px;font-size:22px;line-height:1.15;color:var(--texto)}
 .afn b{font-size:18px;font-weight:800;white-space:nowrap}
 .chip{display:inline-block;font-size:18px;font-weight:800;color:#fff;padding:2px 10px;border-radius:999px;vertical-align:middle;margin-left:6px;letter-spacing:.04em}
 
@@ -467,7 +467,7 @@ body.no-motion *,body.no-motion *::before,body.no-motion *::after{transition:non
       <div class="card"><div class="hd" style="background:#8C20FF">Fortalezas</div>
         <div class="bd"><ul class="list">
           <li>Es el canal preferido: 16 de 33 (48 %)</li>
-          <li>La compra de datos fluye sin quiebres</li>
+          <li>La compra de datos fluye sin puntos de fricción</li>
           <li>Lo escrito queda en pantalla.</li>
         </ul></div></div>
       <div class="card"><div class="hd" style="background:#C2410C">Debilidades</div>
@@ -507,18 +507,18 @@ body.no-motion *,body.no-motion *::before,body.no-motion *::after{transition:non
   </div>
 </section>
 
-<!-- 6 · Q1 a Q6 -->
+<!-- 6 · Puntos de fricción 1 a 6 -->
 <section class="slide" data-group="Semanas 3–4" aria-label="Diapositiva 6 de 24">
   <div class="week-row"><span class="week">SEMANAS 3–4</span><span class="wsep" data-wave></span></div>
-  <h2>Q1 a Q6 ordenan lo que vimos</h2>
+  <h2>Seis puntos de fricción ordenan lo que vimos</h2>
   <div class="body">
     <div class="grid3" style="grid-template-rows:1fr 1fr;flex:1">
-      <div class="card"><div class="fig" style="font-size:64px">Q1</div><p class="ttl" style="margin:10px 0 6px">No encontró la opción</p><p class="cap muted" style="margin:0">(no aparece y hay que deducirla)</p></div>
-      <div class="card"><div class="fig" style="font-size:64px">Q2</div><p class="ttl" style="margin:10px 0 6px">Interpretó mal</p><p class="cap muted" style="margin:0">(el bot responde a otra intención)</p></div>
-      <div class="card"><div class="fig" style="font-size:64px">Q3</div><p class="ttl" style="margin:10px 0 6px">Se quedó en círculos</p><p class="cap muted" style="margin:0">(repite opciones sin avanzar)</p></div>
-      <div class="card"><div class="fig" style="font-size:64px">Q4</div><p class="ttl" style="margin:10px 0 6px">Mensaje largo o confuso</p><p class="cap muted" style="margin:0">(cuesta identificar la opción)</p></div>
-      <div class="card"><div class="fig" style="font-size:64px">Q5</div><p class="ttl" style="margin:10px 0 6px">No permite corregir</p><p class="cap muted" style="margin:0">(corregir exige reiniciar)</p></div>
-      <div class="card"><div class="fig" style="font-size:64px">Q6</div><p class="ttl" style="margin:10px 0 6px">Derivación mal hecha</p><p class="cap muted" style="margin:0">(el asesor no recibe el historial o tarda)</p></div>
+      <div class="card"><div class="fig" style="font-size:64px">1</div><p class="ttl" style="margin:10px 0 6px">No encontró la opción</p><p class="cap muted" style="margin:0">(no aparece y hay que deducirla)</p></div>
+      <div class="card"><div class="fig" style="font-size:64px">2</div><p class="ttl" style="margin:10px 0 6px">Interpretó mal</p><p class="cap muted" style="margin:0">(el bot responde a otra intención)</p></div>
+      <div class="card"><div class="fig" style="font-size:64px">3</div><p class="ttl" style="margin:10px 0 6px">Se quedó en círculos</p><p class="cap muted" style="margin:0">(repite opciones sin avanzar)</p></div>
+      <div class="card"><div class="fig" style="font-size:64px">4</div><p class="ttl" style="margin:10px 0 6px">Mensaje largo o confuso</p><p class="cap muted" style="margin:0">(cuesta identificar la opción)</p></div>
+      <div class="card"><div class="fig" style="font-size:64px">5</div><p class="ttl" style="margin:10px 0 6px">No permite corregir</p><p class="cap muted" style="margin:0">(corregir exige reiniciar)</p></div>
+      <div class="card"><div class="fig" style="font-size:64px">6</div><p class="ttl" style="margin:10px 0 6px">Derivación mal hecha</p><p class="cap muted" style="margin:0">(el asesor no recibe el historial o tarda)</p></div>
     </div>
   </div>
 </section>
@@ -528,16 +528,16 @@ body.no-motion *,body.no-motion *::before,body.no-motion *::after{transition:non
   <div class="week-row"><span class="week">SEMANAS 5–6</span><span class="wsep" data-wave></span></div>
   <h2 class="long">Lo más común: no encontrar la opción y dar vueltas</h2>
   <div class="body">
-    <p class="cap muted" style="margin:0">Base: 33 personas. Cantidad de personas que tuvieron cada quiebre.</p>
+    <p class="cap muted" style="margin:0">Base: 33 personas. Cantidad de personas que tuvieron cada punto de fricción.</p>
     <div class="hbars">
-      <div class="hbar"><span>Q1 No encontró la opción</span><div class="track"><div class="fill top" style="--v:.394"></div></div><span class="val">13 (39 %)</span></div>
-      <div class="hbar"><span>Q3 Se quedó en círculos</span><div class="track"><div class="fill" style="--v:.364"></div></div><span class="val">12 (36 %)</span></div>
-      <div class="hbar"><span>Q6 Derivación mal hecha</span><div class="track"><div class="fill" style="--v:.333"></div></div><span class="val">11 (33 %)</span></div>
-      <div class="hbar"><span>Q2 Interpretó mal</span><div class="track"><div class="fill" style="--v:.303"></div></div><span class="val">10 (30 %)</span></div>
-      <div class="hbar"><span>Q5 No permite corregir</span><div class="track"><div class="fill" style="--v:.182"></div></div><span class="val">6 (18 %)</span></div>
-      <div class="hbar"><span>Q4 Mensaje largo o confuso</span><div class="track"><div class="fill" style="--v:.152"></div></div><span class="val">5 (15 %)</span></div>
+      <div class="hbar"><span>1 · No encontró la opción</span><div class="track"><div class="fill top" style="--v:.394"></div></div><span class="val">13 (39 %)</span></div>
+      <div class="hbar"><span>3 · Se quedó en círculos</span><div class="track"><div class="fill" style="--v:.364"></div></div><span class="val">12 (36 %)</span></div>
+      <div class="hbar"><span>6 · Derivación mal hecha</span><div class="track"><div class="fill" style="--v:.333"></div></div><span class="val">11 (33 %)</span></div>
+      <div class="hbar"><span>2 · Interpretó mal</span><div class="track"><div class="fill" style="--v:.303"></div></div><span class="val">10 (30 %)</span></div>
+      <div class="hbar"><span>5 · No permite corregir</span><div class="track"><div class="fill" style="--v:.182"></div></div><span class="val">6 (18 %)</span></div>
+      <div class="hbar"><span>4 · Mensaje largo o confuso</span><div class="track"><div class="fill" style="--v:.152"></div></div><span class="val">5 (15 %)</span></div>
     </div>
-    <p class="lead">Nota: 7 de 33 no tuvieron ningún quiebre.</p>
+    <p class="lead">Nota: 7 de 33 no tuvieron ningún punto de fricción.</p>
   </div>
 </section>
 
@@ -555,17 +555,17 @@ body.no-motion *,body.no-motion *::before,body.no-motion *::after{transition:non
     <div class="afg">
       <div class="af"><div class="afb" style="background:var(--violeta)"></div>
         <h3 class="afh">1. El bot no entiende lo que escribo</h3>
-        <p class="afd">Q2 · 10 de 33 · 5 de 7 entrevistas</p>
+        <p class="afd">Punto de fricción 2 · 10 de 33 · 5 de 7 entrevistas</p>
         <p class="afn n-l">Esto no tiene nada que ver con lo que escribí <b>(E3)</b></p>
-        <p class="afn n-g">La intención escrita en el primer mensaje fue ignorada <b>(Sesiones B, C y D)</b></p></div>
+        <p class="afn n-g">Ignoró el motivo escrito en el primer mensaje <b>(Sesiones B a E)</b></p></div>
       <div class="af"><div class="afb" style="background:var(--violeta)"></div>
         <h3 class="afh">2. Doy vueltas y repito lo mismo</h3>
-        <p class="afd">Q3 · 12 de 33 en la encuesta</p>
+        <p class="afd">Punto de fricción 3 · 12 de 33</p>
         <p class="afn n-l">Ya van tres veces con lo mismo <b>(E5)</b></p>
         <p class="afn n-y">Me tocó repetir varias veces lo mismo hasta que funcionó <b>(Encuesta)</b></p></div>
       <div class="af"><div class="afb" style="background:var(--violeta)"></div>
         <h3 class="afh">3. No encuentro la opción</h3>
-        <p class="afd">Q1 · 13 de 33 en la encuesta</p>
+        <p class="afd">Punto de fricción 1 · 13 de 33</p>
         <p class="afn n-l">Es que yo no sé cuál es el botón que le sirve a uno <b>(E4)</b></p>
         <p class="afn n-l">Aquí no veo dónde pedir una persona <b>(E4)</b></p></div>
       <div class="af"><div class="afb" style="background:var(--violeta)"></div>
@@ -580,17 +580,17 @@ body.no-motion *,body.no-motion *::before,body.no-motion *::after{transition:non
         <p class="afn n-l">Para el saldo y los paquetes sirve bien <b>(E3)</b></p></div>
       <div class="af"><div class="afb" style="background:var(--alerta)"></div>
         <h3 class="afh">6. Esperas y tiempo perdido <span class="chip" style="background:var(--alerta)">NUEVO</span></h3>
-        <p class="afd">Fuera de Q1–Q6 · 4 de 7 entrevistas</p>
+        <p class="afd">Fuera de la lista · 4 de 7 entrevistas</p>
         <p class="afn n-l">Un mensaje de tres minutos sin más información no sirve <b>(E7)</b></p>
         <p class="afn n-l">Abandonó al segundo aviso de espera, de 5 minutos <b>(E2)</b></p></div>
       <div class="af"><div class="afb" style="background:var(--alerta)"></div>
         <h3 class="afh">7. Lo intenté una vez y no volví <span class="chip" style="background:var(--alerta)">NUEVO</span></h3>
-        <p class="afd">Fuera de Q1–Q6 · 4 de 6 lo dejaron</p>
+        <p class="afd">Fuera de la lista · 4 de 6 lo dejaron</p>
         <p class="afn n-l">Lo intenté una vez y me tocó llamar igual, entonces perdí el tiempo dos veces <b>(E7)</b></p>
         <p class="afn n-y">No, ya no lo uso, me cansé con ellos <b>(Encuesta)</b></p></div>
       <div class="af"><div class="afb" style="background:var(--violeta)"></div>
         <h3 class="afh">8. La transferencia al asesor falla</h3>
-        <p class="afd">Q6 · 11 de 33 en la encuesta</p>
+        <p class="afd">Punto de fricción 6 · 11 de 33</p>
         <p class="afn n-g">El asesor preguntó «¿en qué puedo ayudarte hoy?» justo después de que la persona lo dijera <b>(Sesión C)</b></p>
         <p class="afn n-l">Que me diga cuánto voy a esperar al asesor <b>(E7)</b></p></div>
     </div>
@@ -628,8 +628,8 @@ body.no-motion *,body.no-motion *::before,body.no-motion *::after{transition:non
           <li>Miedo a equivocarse y a que le descuenten saldo <span class="src">(E4)</span></li>
         </ul></div>
       <div class="ec" style="border-top:8px solid var(--alerta)"><p class="ct" style="color:var(--alerta)">Dolores</p>        <ul>
-          <li>No encuentra la opción que busca <span class="src">(Q1)</span> (39 % de la encuesta)</li>
-          <li>La conversación se queda en círculos <span class="src">(Q3)</span> (36 % de la encuesta)</li>
+          <li>No encuentra la opción que busca <span class="src">(punto de fricción 1)</span> (39 % de la encuesta)</li>
+          <li>La conversación se queda en círculos <span class="src">(punto de fricción 3)</span> (36 % de la encuesta)</li>
           <li>Solo 5 de 33 resolvieron en el chat a la primera (15 % de la encuesta)</li>
         </ul></div>
       <div class="ec" style="border-top:8px solid #2F7D4F"><p class="ct" style="color:#2F7D4F">Ganancias</p>        <ul>
@@ -723,7 +723,7 @@ body.no-motion *,body.no-motion *::before,body.no-motion *::after{transition:non
   <div class="week-row"><span class="week">SEMANA 8</span><span class="wsep" data-wave></span></div>
   <h2>Los botones avanzan; la caja de texto no</h2>
   <div class="body">
-    <p class="lead">En lugar de mapas de calor, que no existen en un chat, mapeamos los toques en tres pantallas del bot (sesiones A a D).</p>
+    <p class="lead">En lugar de mapas de calor, que no existen en un chat, mapeamos los toques en tres pantallas del bot (sesiones A a D; la E, de una línea prepago, no pasó por ellas).</p>
     <figure class="card img-card" style="margin:0"><img data-zoom src="media/toques.png" alt="Mapa de toques en tres pantallas del bot, sesiones A a D"></figure>
   </div>
 </section>
@@ -924,10 +924,10 @@ body.no-motion *,body.no-motion *::before,body.no-motion *::after{transition:non
         <div class="jl">Evidencia</div>
         <div>17 de 33 escriben por una falla</div>
         <div>Motivo ignorado en 4 de 4 sesiones</div>
-        <div>Q1: 13 de 33 · mapa del menú (inspección)</div>
-        <div class="c4">Q3: 12 de 33 · «ya van tres veces» (E5)</div>
+        <div>Punto de fricción 1: 13 de 33 · mapa del menú (inspección)</div>
+        <div class="c4">Punto de fricción 3: 12 de 33 · «ya van tres veces» (E5)</div>
         <div>21 de 33 lo pidieron · inspección del 13 y 14/10</div>
-        <div>Q6: 9 de 21 repitieron todo</div>
+        <div>Punto de fricción 6: 9 de 21 repitieron todo</div>
         <div>15 de 33 resolvieron · 4 de 6 no volvieron.</div>
 
         <div class="jl">Oportunidad</div>
@@ -956,7 +956,7 @@ body.no-motion *,body.no-motion *::before,body.no-motion *::after{transition:non
         <ul class="list" style="margin-top:14px">
           <li>1 de cada 11 casos se resuelve sin asesor</li>
           <li>23 de 33 tropezaron al buscar la opción</li>
-          <li>Los quiebres los provoca el texto libre; con botones no hubo ninguno</li>
+          <li>Los puntos de fricción los provoca el texto libre; con botones no hubo ninguno</li>
           <li>El bot deriva al segundo mensaje no reconocido, sin preguntar</li>
           <li>4 de 6 entrevistados dejaron el chat tras un mal intento.</li>
         </ul>
